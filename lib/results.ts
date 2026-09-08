@@ -14,7 +14,7 @@ export function ensureSchema() {
   return schemaReady;
 }
 
-export async function listResults() { await ensureSchema(); return (await env.DB.prepare('SELECT * FROM results ORDER BY created_at DESC').all<TestResult>()).results; }
+export async function listResults() { await ensureSchema(); return (await env.DB.prepare('SELECT * FROM results ORDER BY likes DESC, created_at DESC').all<TestResult>()).results; }
 export async function getResult(id:string) { await ensureSchema(); return env.DB.prepare('SELECT * FROM results WHERE id = ?').bind(id).first<TestResult>(); }
 export function getAdminPassword() {
   const password = env.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;

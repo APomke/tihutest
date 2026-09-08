@@ -12,7 +12,9 @@ export function Gallery({ initialResults }: { initialResults: TestResult[] }) {
     setPending(id); setMessages((m) => ({ ...m, [id]: '' }));
     const response = await fetch('/api/results/vote', { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({id,value}) });
     const data = await response.json();
-    if (response.ok) setResults((items) => items.map((item) => item.id === id ? { ...item, likes:data.likes, dislikes:data.dislikes } : item));
+    if (response.ok) setResults((items) => items
+      .map((item) => item.id === id ? { ...item, likes:data.likes, dislikes:data.dislikes } : item)
+      .sort((a,b) => b.likes - a.likes || b.created_at - a.created_at));
     else setMessages((m) => ({ ...m, [id]: data.error || '投票失败，请稍后再试' }));
     setPending(undefined);
   }
