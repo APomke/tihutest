@@ -1,0 +1,27 @@
+services:
+  pelican-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pelican-test
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    environment:
+      APP_PORT: 3000
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?请在 .env 文件中设置 ADMIN_PASSWORD}"
+    volumes:
+      - pelican-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  pelican-data:
